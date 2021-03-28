@@ -154,11 +154,13 @@ bool SkipList<Key, Compare>::find(Key value)
 	{
 		while(cur->next_[i] != nullptr)
 		{
-			if(cur->next_[i]->value_ > value)
+			//if(cur->next_[i]->value_ > value)
+			if(!Compare(cur->next_[i]->value_, value))
 			{
 				break;
 			}
-			if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
+			//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
+			if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
 			{
 				return true;//return cur->next_;
 			}
@@ -234,6 +236,7 @@ struct MyGreater
 		return x > y;
 	}
 };
+
 int main()
 {
 	SkipList<int, MyGreater<int> > sl;

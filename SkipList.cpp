@@ -154,15 +154,15 @@ bool SkipList<Key, Compare>::find(Key value)
 	{
 		while(cur->next_[i] != nullptr)
 		{
-			//if(cur->next_[i]->value_ > value)
-			if(!Compare(cur->next_[i]->value_, value))
-			{
-				break;
-			}
 			//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
 			if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
 			{
 				return true;//return cur->next_;
+			}
+			//if(cur->next_[i]->value_ > value)
+			if(!Compare()(cur->next_[i]->value_, value))
+			{
+				break;
 			}
 			cur = cur->next_[i];
 		}
@@ -251,5 +251,5 @@ int main()
 	sl.insert(60);
 
 	cout << boolalpha;
-	cout << sl.find(90);
+	cout << sl.find(10);
 }

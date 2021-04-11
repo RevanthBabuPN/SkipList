@@ -51,6 +51,7 @@ class SkipList
 	void insert_unique(Key value);
 	bool find(Key value);
 	bool remove(Key value);
+	void display();
 
 	private:
 	static int MAX_LEVEL;
@@ -112,27 +113,39 @@ void SkipList<Key, Compare>::insert_unique(Key value)
 
 	SLNode<Key> *cur = head_;
 
+	SLNode<Key> *prev[level]; 
+
+	int k = level;
 	for(int i = currentMaxLevel_-1; i>=0; --i)
 	{
-		// while(cur->next_[i] != nullptr)
-		// {
-		// 	if(!Compare()(cur->next_[i]->value_, value))//if(cur->next_[i]->value_ > value)
-		// 	{
-		// 		if(!Compare()(value, cur->next_[i]->value_))
-		// 		{
-		// 			return;
-		// 		}
-		// 		break;
-		// 	}
-		// 	cur = cur->next_[i];
-		// }
+		/*
+		while(cur->next_[i] != nullptr)
+		{
+			if(!Compare()(cur->next_[i]->value_, value))//if(cur->next_[i]->value_ > value)
+			{
+				if(!Compare()(value, cur->next_[i]->value_))
+				{
+					return;
+				}
+				break;
+			}
+			cur = cur->next_[i];
+		}
+		*/
 		while(cur->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value))
 		{
 			cur = cur->next_[i];
 		}
 
-		if(cur->next_[i] != nullptr && !Compare()(value, cur->next_[i]->value_)) // not unique
+		if(cur->next_[i] != nullptr && (!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))) // not unique
 		{
+			// cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
+			
+			for(int j = level; j > i; --j)
+			{
+				prev[j]->next_[j] = newNode->next_[j]; 
+			}
+			// delete newNode;
 			return;
 		}
 		
@@ -140,6 +153,8 @@ void SkipList<Key, Compare>::insert_unique(Key value)
 		{
 			newNode->next_[i] = cur->next_[i];
 			cur->next_[i] = newNode;
+			// cout << "level i: "<< i << "\n";
+			prev[i] = cur;
 		}
 	}
 	++size_;
@@ -228,6 +243,17 @@ int SkipList<Key, Compare>::flipAndIncrementLevel()
 	return level;
 }
 
+template<class Key, class Compare>
+void SkipList<Key, Compare>::display(){
+	SLNode<Key> *cur = head_;
+	int i = 0;
+	while(cur->next_[i] != nullptr)
+	{
+		cout<<cur->next_[i]->value_<<"  ";
+		cur = cur->next_[i];
+	}
+}
+
 template<typename T>
 struct MyGreater
 {
@@ -240,7 +266,9 @@ struct MyGreater
 int main()
 {
 	SkipList<int, MyGreater<int> > sl;
+	// SkipList<int> sl;
 	sl.insert(10);
+	sl.insert_unique(10);
 	sl.insert_unique(10);
 	sl.insert_unique(10);
 	sl.insert(20);
@@ -249,7 +277,7 @@ int main()
 	sl.insert(50);
 	sl.insert_unique(10);
 	sl.insert(60);
-
+	sl.display();
 	cout << boolalpha;
 	cout << sl.find(10);
 }

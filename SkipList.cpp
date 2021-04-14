@@ -110,13 +110,10 @@ void SkipList<Key, Compare>::insert_unique(Key value)
 {
 	int level = flipAndIncrementLevel();
 	SLNode<Key> *newNode = new SLNode<Key>(value, level);
-
 	SLNode<Key> *cur = head_;
-
 	SLNode<Key> *prev[level]; 
 
-	int k = level;
-	for(int i = currentMaxLevel_-1; i>=0; --i)
+	for(int i = currentMaxLevel_ - 1; i >= 0; --i)
 	{
 		/*
 		while(cur->next_[i] != nullptr)
@@ -145,7 +142,11 @@ void SkipList<Key, Compare>::insert_unique(Key value)
 			{
 				prev[j]->next_[j] = newNode->next_[j]; 
 			}
-			// delete newNode;
+			for (int j = level; j >= 0; --j)
+			{
+				newNode->next_[j] = nullptr;
+			}
+			delete newNode;
 			return;
 		}
 		
@@ -244,13 +245,18 @@ int SkipList<Key, Compare>::flipAndIncrementLevel()
 }
 
 template<class Key, class Compare>
-void SkipList<Key, Compare>::display(){
-	SLNode<Key> *cur = head_;
-	int i = 0;
-	while(cur->next_[i] != nullptr)
+void SkipList<Key, Compare>::display()
+{
+	for(int i = currentMaxLevel_ - 1; i >= 0; --i)
 	{
-		cout<<cur->next_[i]->value_<<"  ";
-		cur = cur->next_[i];
+		SLNode<Key> *cur = head_;
+		// int i = 0;
+		while(cur->next_[i] != nullptr)
+		{
+			cout << cur->next_[i]->value_ << '\t';
+			cur = cur->next_[i];
+		}
+		cout << '\n';
 	}
 }
 
@@ -265,8 +271,8 @@ struct MyGreater
 
 int main()
 {
-	SkipList<int, MyGreater<int> > sl;
-	// SkipList<int> sl;
+	// SkipList<int, MyGreater<int> > sl;
+	SkipList<int> sl;
 	sl.insert(10);
 	sl.insert_unique(10);
 	sl.insert_unique(10);
@@ -281,3 +287,8 @@ int main()
 	cout << boolalpha;
 	cout << sl.find(10);
 }
+/*
+		30		50
+10		30	40	50
+10	20	30	40	50	60
+*/

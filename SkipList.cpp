@@ -277,7 +277,85 @@ class SkipList
 			cout << '\n';
 		}
 	}
+	class Iterator
+	{
+		private:
+		SLNode *p_it_;
+		
+		public:
+		typedef bidirectional_iterator_tag iterator_category;
 
+		Iterator()
+		{}
+
+		Iterator(SLNode *p_it)
+		:p_it_(p_it)
+		{
+			
+		}
+
+		Iterator(const Iterator& rhs) {
+			p_it_ = rhs.p_it_;
+		}
+
+		Iterator& operator++() // pre
+		{
+			p_it_ = p_it_ -> next_[0];
+			return *this;
+		}
+
+		Iterator operator++(int) // post
+		{
+			Iterator temp(*this);
+			++*this;
+			return temp;
+		}
+
+		Iterator& operator--() // pre
+		{
+			p_it_ = p_it_ -> prev_[0];
+			return *this;
+		}
+
+		Iterator operator--(int) // post
+		{
+			Iterator temp(*this);
+			--*this;
+			return temp;
+		}
+
+		const_reference operator*() const
+		{
+			return p_it_ -> value_;
+		}
+		
+		bool operator==(const Iterator& rhs) const
+		{
+			return p_it_ == rhs.p_it_; //if the pointers point to same location we can say they are equal
+		}
+		
+		bool operator!=(const Iterator& rhs) const
+		{
+			return !(*this == rhs);
+		}
+	};
+
+	using iterator = Iterator;
+
+	Iterator begin()
+	{
+		return Iterator(head_->next_[0]);
+	}
+	Iterator end()
+	{
+		return Iterator(tail_);
+	}
+
+	inline bidirectional_iterator_tag
+	iterator_category(const Iterator&) 
+	{
+		return bidirectional_iterator_tag();
+	}
 };
 template<class Key, class Compare>
 int SkipList<Key, Compare>::MAX_LEVEL = 10;
@@ -374,9 +452,9 @@ int main()
 		cout << boolalpha;
 		cout << sl.find(10);
 
-		// SkipList<float>::Iterator it = sl.begin();
-		// cout << "\n" << *it << "\n\n";
-		// disp(begin(sl), end(sl));
+		SkipList<float>::Iterator it = sl.begin();
+		cout << "\n" << *it << "\n\n";
+		disp(begin(sl), end(sl));
 	}
 	#endif
 	#if 0

@@ -1,230 +1,300 @@
 #include<iostream>
 using namespace std;
 #include<random>
+#include<set>
 
 // template<class Key, class Compare>
 // class SkipList;
 
-template<class Key>
-class SLNode
-{
-	public:
-	SLNode(Key value, int level);
-	~SLNode();
-	friend bool operator<(SLNode<Key>& lhs, SLNode<Key>& rhs)
-	{
-		return lhs.value_ < rhs.value_;
-	}
-	//private:
-	Key value_;
-	int level_;
-	SLNode<Key>** next_;
-
-	//friend class SkipList<Key>;
-};
-
-
-template<typename Key>
-SLNode<Key>::SLNode(Key value, int level)
-:value_(value), level_(level), next_(new SLNode<Key>*[level + 1])
-{
-	for(int i(0); i < level + 1; ++i)
-	{
-		next_[i] = nullptr;
-	}
-}
-
-template<typename Key>
-SLNode<Key>::~SLNode()
-{
-	delete [] next_;
-}
-
-
-template<class Key, class Compare = less<Key> >
+template<class Key, class Compare = std::less<Key> >
 class SkipList
 {
-	public:
-	SkipList();
-	~SkipList();
-	void insert(Key value);
-	void insert_unique(Key value);
-	bool find(Key value);
-	bool remove(Key value);
-	void display();
+	using key_type = Key;
+	using value_type = Key;
+	using size_type = std::size_t;
+	using key_compare = Compare;
+	using value_compare = Compare;
+	using pointer = value_type*;
+	using const_pointer = const value_type*;
+	using reference = value_type&;
+	using const_reference = const value_type&;
 
 	private:
+	struct SLNode
+	{
+		SLNode(key_type value, int level)	
+		:value_(value), level_(level), next_(new SLNode*[level + 1]), prev_(new SLNode*[level + 1])
+		{
+			for(int i(0); i < level + 1; ++i)
+			{
+				next_[i] = nullptr;
+				prev_[i] = nullptr;
+			}
+		}
+		
+		SLNode(int level)	
+		:level_(level), next_(new SLNode*[level + 1]), prev_(new SLNode*[level + 1])
+		{
+			for(int i(0); i < level + 1; ++i)
+			{
+				next_[i] = nullptr;
+				prev_[i] = nullptr;
+			}
+		}
+
+		~SLNode()
+		{
+			delete [] next_;
+		}
+
+		friend bool operator<(SLNode& lhs, SLNode& rhs)
+		{
+			return lhs.value_ < rhs.value_;
+		}
+
+		key_type value_;
+		int level_;
+		SLNode** next_;
+		SLNode** prev_;
+		//friend class SkipList<Key>;
+	};
+
+	
 	static int MAX_LEVEL;
-	SLNode<Key> *head_;
+	SLNode *head_;
+	SLNode *tail_;
 	int size_;
 	int currentMaxLevel_;
-	int flipAndIncrementLevel();
+	//int flipAndIncrementLevel();
+
+	static bool randomBool()
+	{
+		return 0 + (rand() % 2) == 1;
+	}
+
+	static int flipAndIncrementLevel(int currentMaxLevel_, int MAX_LEVEL)
+	{
+		bool head = true;
+		int level = 0;
+
+		// for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
+		for(int i = 0; i < MAX_LEVEL; ++i)
+		{
+			head = head && randomBool();//head && seed.next;
+			if(head)
+			{
+				level++;
+				if(level == currentMaxLevel_)
+				{
+					++currentMaxLevel_;
+					break;
+				}
+			} 
+			else
+			{
+				break;
+			}
+		}
+		return level;
+	}
+
+	public:
+	SkipList()
+	//:head_(new SLNode(-1,SkipList<Key, Compare>::MAX_LEVEL)), size_(0), currentMaxLevel_(1)
+	:head_(new SLNode(MAX_LEVEL)), tail_(new SLNode(MAX_LEVEL)), size_(0), currentMaxLevel_(1)
+	{
+		for(int i = 0; i < MAX_LEVEL + 1; ++i)
+		{
+			head_->next_[i] = tail_;
+			tail_->prev_[i] = head_;
+		}
+	}
+	~SkipList()
+	{
+		delete head_;
+	}
+
+	void insert(Key value)
+	{
+		//int level = flipAndIncrementLevel();
+
+
+		int level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		if (level >= currentMaxLevel_)
+			currentMaxLevel_ = level + 1;
+		
+
+		SLNode *newNode = new SLNode(value, level);
+		SLNode *cur = head_;
+
+		for(int i = currentMaxLevel_-1; i>=0; --i)
+		{
+			while(cur->next_[i]->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value)) //while(cur->next_[i] != nullptr)
+			{
+				// if(!Compare()(cur->next_[i]->value_, value)) //if(cur->next_[i]->value_ > value)
+				// {
+				// 	break;
+				// }
+				cur = cur->next_[i];
+			}
+
+			if(i <= level)
+			{
+				newNode->next_[i] = cur->next_[i];
+				cur->next_[i]->prev_[i] = newNode;
+				newNode->prev_[i] = cur;
+				cur->next_[i] = newNode;
+			}
+		}
+		++size_;
+	}
+
+	void insert_unique(Key value)	
+	{
+		//int level = flipAndIncrementLevel();
+
+
+		int level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		if (level >= currentMaxLevel_)
+			currentMaxLevel_ = level + 1;
+
+
+		SLNode *newNode = new SLNode(value, level);
+		SLNode *cur = head_;
+		SLNode *old[level]; 
+
+		for(int i = currentMaxLevel_ - 1; i >= 0; --i)
+		{
+			/*
+			while(cur->next_[i] != nullptr)
+			{
+				if(!Compare()(cur->next_[i]->value_, value))//if(cur->next_[i]->value_ > value)
+				{
+					if(!Compare()(value, cur->next_[i]->value_))
+					{
+						return;
+					}
+					break;
+				}
+				cur = cur->next_[i];
+			}
+			*/
+			while(cur->next_[i]->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value))
+			{
+				cur = cur->next_[i];
+			}
+
+			if(cur->next_[i]->next_[i] != nullptr && (!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))) // not unique
+			{
+				// cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
+				for(int j = level; j > i; --j)
+				{
+					old[j]->next_[j] = newNode->next_[j]; 
+					newNode->next_[j]->prev_[j] = old[j];
+				}
+				for (int j = level; j >= 0; --j)
+				{
+					newNode->next_[j] = nullptr;
+					newNode->prev_[j] = nullptr;
+				}
+				delete newNode;
+				return;
+			}
+			
+			if(i <= level)
+			{
+				newNode->next_[i] = cur->next_[i];
+				cur->next_[i]->prev_[i] = newNode;
+				newNode->prev_[i] = cur;
+				cur->next_[i] = newNode;
+				// cout << "level i: "<< i << "\n";
+				old[i] = cur;
+			}
+		}
+		++size_;
+	}
+
+	bool find(Key value)
+	{
+		SLNode *cur = head_;
+		for(int i = currentMaxLevel_-1; i >= 0; --i)
+		{
+			while(cur->next_[i] != nullptr)
+			{
+				//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
+				if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
+				{
+					return true;//return cur->next_;
+				}
+				//if(cur->next_[i]->value_ > value)
+				if(!Compare()(cur->next_[i]->value_, value))
+				{
+					break;
+				}
+				cur = cur->next_[i];
+			}
+		}
+		return false;//return nullptr
+	}
+
+	bool remove(Key value)	
+	{
+		SLNode *cur = head_;
+		bool res = false;
+		for(int i = currentMaxLevel_-1; i >= 0; --i)
+		{
+			while(cur->next_[i] != nullptr)
+			{
+				if(cur->next_[i]->value_ > value)
+				{
+					break;
+				}
+				if(cur->next_[i]->value_ == value)
+				{
+					cur->next_[i] = cur->next_[i]->next_[i];
+					res = true;
+					// --size_;
+					break;
+				}
+				cur = cur->next_[i];
+			}
+		}
+		--size_;
+		return res;
+	}
+
+	void display()
+	{
+		for(int i = currentMaxLevel_ - 1; i >= 0; --i)
+		{
+			SLNode *cur = head_;
+			// int i = 0;
+			while(cur->next_[i]->next_[i] != nullptr)
+			{
+				cout << cur->next_[i]->value_ << '\t';
+				cur = cur->next_[i];
+			}
+			cout << '\n';
+		}
+	}
+
 };
 template<class Key, class Compare>
 int SkipList<Key, Compare>::MAX_LEVEL = 10;
-
-
-template<class Key, class Compare>
-SkipList<Key, Compare>::SkipList()
-:head_(new SLNode<Key>(-1,SkipList<Key, Compare>::MAX_LEVEL)), size_(0), currentMaxLevel_(1)
-{
-
-}
-
-template<class Key, class Compare>
-SkipList<Key, Compare>::~SkipList()
-{
-	delete head_;
-}
-
-template<class Key, class Compare>
-void SkipList<Key, Compare>::insert(Key value)
-{
-	int level = flipAndIncrementLevel();
-	SLNode<Key> *newNode = new SLNode<Key>(value, level);
-
-	SLNode<Key> *cur = head_;
-
-	for(int i = currentMaxLevel_-1; i>=0; --i)
-	{
-		while(cur->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value)) //while(cur->next_[i] != nullptr)
-		{
-			// if(!Compare()(cur->next_[i]->value_, value)) //if(cur->next_[i]->value_ > value)
-			// {
-			// 	break;
-			// }
-			cur = cur->next_[i];
-		}
-
-		if(i <= level)
-		{
-			newNode->next_[i] = cur->next_[i];
-			cur->next_[i] = newNode;
-		}
-	}
-	++size_;
-}
-
-template<class Key, class Compare>
-void SkipList<Key, Compare>::insert_unique(Key value)
-{
-	int level = flipAndIncrementLevel();
-	SLNode<Key> *newNode = new SLNode<Key>(value, level);
-	SLNode<Key> *cur = head_;
-	SLNode<Key> *prev[level]; 
-
-	for(int i = currentMaxLevel_ - 1; i >= 0; --i)
-	{
-		/*
-		while(cur->next_[i] != nullptr)
-		{
-			if(!Compare()(cur->next_[i]->value_, value))//if(cur->next_[i]->value_ > value)
-			{
-				if(!Compare()(value, cur->next_[i]->value_))
-				{
-					return;
-				}
-				break;
-			}
-			cur = cur->next_[i];
-		}
-		*/
-		while(cur->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value))
-		{
-			cur = cur->next_[i];
-		}
-
-		if(cur->next_[i] != nullptr && (!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))) // not unique
-		{
-			// cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
-			
-			for(int j = level; j > i; --j)
-			{
-				prev[j]->next_[j] = newNode->next_[j]; 
-			}
-			for (int j = level; j >= 0; --j)
-			{
-				newNode->next_[j] = nullptr;
-			}
-			delete newNode;
-			return;
-		}
-		
-		if(i <= level)
-		{
-			newNode->next_[i] = cur->next_[i];
-			cur->next_[i] = newNode;
-			// cout << "level i: "<< i << "\n";
-			prev[i] = cur;
-		}
-	}
-	++size_;
-}
-
-template<class Key, class Compare>
-//SLNode* SkipList<T>::find(T value)
-bool SkipList<Key, Compare>::find(Key value)
-{
-	SLNode<Key> *cur = head_;
-	for(int i = currentMaxLevel_-1; i >= 0; --i)
-	{
-		while(cur->next_[i] != nullptr)
-		{
-			//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
-			if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
-			{
-				return true;//return cur->next_;
-			}
-			//if(cur->next_[i]->value_ > value)
-			if(!Compare()(cur->next_[i]->value_, value))
-			{
-				break;
-			}
-			cur = cur->next_[i];
-		}
-	}
-	return false;//return nullptr
-}
-
-template<class Key, class Compare>
-bool SkipList<Key, Compare>::remove(Key value)
-{
-	SLNode<Key> *cur = head_;
-	bool res = false;
-	for(int i = currentMaxLevel_-1; i >= 0; --i)
-	{
-		while(cur->next_[i] != nullptr)
-		{
-			if(cur->next_[i]->value_ > value)
-			{
-				break;
-			}
-			if(cur->next_[i]->value_ == value)
-			{
-				cur->next_[i] = cur->next_[i]->next_[i];
-				res = true;
-				// --size_;
-				break;
-			}
-			cur = cur->next_[i];
-		}
-	}
-	--size_;
-	return res;
-}
-
+/*
 bool randomBool()
 {
 	return 0 + (rand() % 2) == 1;
 }
 
-template<class Key, class Compare>
+//template<class Key, class Compare>
 int SkipList<Key, Compare>::flipAndIncrementLevel()
 {
 	bool head = true;
 	int level = 0;
 
-	for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
+	// for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
+	for(int i = 0; i < MAX_LEVEL; ++i)
 	{
 		head = head && randomBool();//head && seed.next;
 		if(head)
@@ -244,19 +314,14 @@ int SkipList<Key, Compare>::flipAndIncrementLevel()
 	return level;
 }
 
-template<class Key, class Compare>
-void SkipList<Key, Compare>::display()
+*/
+template<typename T>
+void disp(T first, T last)
 {
-	for(int i = currentMaxLevel_ - 1; i >= 0; --i)
+	while(first != last)
 	{
-		SLNode<Key> *cur = head_;
-		// int i = 0;
-		while(cur->next_[i] != nullptr)
-		{
-			cout << cur->next_[i]->value_ << '\t';
-			cur = cur->next_[i];
-		}
-		cout << '\n';
+		cout << *first << "\n";
+		++first;
 	}
 }
 
@@ -269,23 +334,67 @@ struct MyGreater
 	}
 };
 
-int main()
+struct A
 {
-	// SkipList<int, MyGreater<int> > sl;
-	SkipList<int> sl;
-	sl.insert(10);
-	sl.insert_unique(10);
-	sl.insert_unique(10);
-	sl.insert_unique(10);
-	sl.insert(20);
-	sl.insert(30);
-	sl.insert(40);
-	sl.insert(50);
-	sl.insert_unique(10);
-	sl.insert(60);
-	sl.display();
-	cout << boolalpha;
-	cout << sl.find(10);
+	int a;
+	int b;
+	friend ostream& operator<<(ostream& o,const A& rhs)
+	{
+		o << rhs.a << ":" << rhs.b ;
+		return o;
+	}
+};
+typedef struct A A;
+
+struct mycomp
+{
+	bool operator()(A x, A y)
+	{
+		return x.a < y.a;
+	}
+};
+
+int main()
+{	
+	#if 1
+	{
+		// SkipList<int, MyGreater<int> > sl;
+		SkipList<float> sl;
+		sl.insert(10.1);
+		sl.insert_unique(10.2);
+		sl.insert_unique(10.2);
+		sl.insert_unique(10);
+		sl.insert(20);
+		sl.insert(30);
+		sl.insert(40);
+		sl.insert(50);
+		sl.insert_unique(10);
+		sl.insert(60);
+		sl.display();
+		cout << boolalpha;
+		cout << sl.find(10);
+
+		// SkipList<float>::Iterator it = sl.begin();
+		// cout << "\n" << *it << "\n\n";
+		// disp(begin(sl), end(sl));
+	}
+	#endif
+	#if 0
+	{
+		SkipList<A, mycomp> sl;
+		sl.insert(A{1,2});
+		sl.insert(A{1,5});
+		sl.insert_unique(A{1,5});
+		sl.insert(A{3,10});
+		sl.insert(A{2,5});	
+		sl.display();
+		SkipList<A, mycomp>::Iterator it = sl.begin();
+		cout << "\n" << (*it).a << "\n";
+		++++it;
+		cout << "\n" << (*it).a << "\n";
+		disp(begin(sl), end(sl));
+	}
+	#endif
 }
 /*
 		30		50

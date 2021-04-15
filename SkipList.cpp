@@ -214,29 +214,6 @@ class SkipList
 		++size_;
 	}
 
-	bool find(Key value)
-	{
-		SLNode *cur = head_;
-		for(int i = currentMaxLevel_-1; i >= 0; --i)
-		{
-			while(cur->next_[i] != nullptr)
-			{
-				//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
-				if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
-				{
-					return true;//return cur->next_;
-				}
-				//if(cur->next_[i]->value_ > value)
-				if(!Compare()(cur->next_[i]->value_, value))
-				{
-					break;
-				}
-				cur = cur->next_[i];
-			}
-		}
-		return false;//return nullptr
-	}
-
 	bool remove(Key value)	
 	{
 		SLNode *cur = head_;
@@ -346,9 +323,34 @@ class SkipList
 	{
 		return Iterator(head_->next_[0]);
 	}
+
 	Iterator end()
 	{
 		return Iterator(tail_);
+	}
+
+	Iterator find(Key value)
+	{
+		SLNode *cur = head_;
+		for(int i = currentMaxLevel_-1; i >= 0; --i)
+		{
+			while(cur->next_[i] != nullptr)
+			{
+				//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
+				if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
+				{
+					//return true;//
+					return Iterator(cur->next_[i]);
+				}
+				//if(cur->next_[i]->value_ > value)
+				if(!Compare()(cur->next_[i]->value_, value))
+				{
+					break;
+				}
+				cur = cur->next_[i];
+			}
+		}
+		return end();//false;
 	}
 
 	inline bidirectional_iterator_tag
@@ -450,10 +452,13 @@ int main()
 		sl.insert(60);
 		sl.display();
 		cout << boolalpha;
-		cout << sl.find(10);
-
-		SkipList<float>::Iterator it = sl.begin();
-		cout << "\n" << *it << "\n\n";
+		SkipList<float>::iterator it = sl.find(100);
+		if (it != sl.end())
+			cout << "found:\t" << *it;
+		else
+			cout << "not found\n";
+		// SkipList<float>::Iterator it = sl.begin();
+		// cout << "\n" << *it << "\n\n";
 		disp(begin(sl), end(sl));
 	}
 	#endif

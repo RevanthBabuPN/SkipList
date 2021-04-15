@@ -1,10 +1,8 @@
 #include<iostream>
-using namespace std;
+// using namespace std;
 #include<random>
-#include<set>
+// #include<set>
 
-// template<class Key, class Compare>
-// class SkipList;
 
 template<class Key, class Compare = std::less<Key> >
 class SkipList
@@ -186,7 +184,7 @@ class SkipList
 
 			if(cur->next_[i]->next_[i] != nullptr && (!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))) // not unique
 			{
-				// cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
+				// std::cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
 				for(int j = level; j > i; --j)
 				{
 					old[j]->next_[j] = newNode->next_[j]; 
@@ -207,7 +205,7 @@ class SkipList
 				cur->next_[i]->prev_[i] = newNode;
 				newNode->prev_[i] = cur;
 				cur->next_[i] = newNode;
-				// cout << "level i: "<< i << "\n";
+				// std::cout << "level i: "<< i << "\n";
 				old[i] = cur;
 			}
 		}
@@ -248,10 +246,10 @@ class SkipList
 			// int i = 0;
 			while(cur->next_[i]->next_[i] != nullptr)
 			{
-				cout << cur->next_[i]->value_ << '\t';
+				std::cout << cur->next_[i]->value_ << '\t';
 				cur = cur->next_[i];
 			}
-			cout << '\n';
+			std::cout << '\n';
 		}
 	}
 	class Iterator
@@ -260,7 +258,7 @@ class SkipList
 		SLNode *p_it_;
 		
 		public:
-		typedef bidirectional_iterator_tag iterator_category;
+		typedef std::bidirectional_iterator_tag iterator_category;
 
 		Iterator()
 		{}
@@ -271,7 +269,8 @@ class SkipList
 			
 		}
 
-		Iterator(const Iterator& rhs) {
+		Iterator(const Iterator& rhs)
+		{
 			p_it_ = rhs.p_it_;
 		}
 
@@ -353,10 +352,10 @@ class SkipList
 		return end();//false;
 	}
 
-	inline bidirectional_iterator_tag
+	inline std::bidirectional_iterator_tag
 	iterator_category(const Iterator&) 
 	{
-		return bidirectional_iterator_tag();
+		return std::bidirectional_iterator_tag();
 	}
 };
 template<class Key, class Compare>
@@ -400,7 +399,7 @@ void disp(T first, T last)
 {
 	while(first != last)
 	{
-		cout << *first << "\n";
+		std::cout << *first << "\n";
 		++first;
 	}
 }
@@ -418,7 +417,7 @@ struct A
 {
 	int a;
 	int b;
-	friend ostream& operator<<(ostream& o,const A& rhs)
+	friend std::ostream& operator<<(std::ostream& o,const A& rhs)
 	{
 		o << rhs.a << ":" << rhs.b ;
 		return o;
@@ -451,15 +450,15 @@ int main()
 		sl.insert_unique(10);
 		sl.insert(60);
 		sl.display();
-		cout << boolalpha;
-		SkipList<float>::iterator it = sl.find(100);
+
+		SkipList<float>::iterator it = sl.find(10.2);
 		if (it != sl.end())
-			cout << "found:\t" << *it;
+			std::cout << "found:\t" << *it << "\n";
 		else
-			cout << "not found\n";
+			std::cout << "not found\n";
 		// SkipList<float>::Iterator it = sl.begin();
-		// cout << "\n" << *it << "\n\n";
-		disp(begin(sl), end(sl));
+		// std::cout << "\n" << *it << "\n\n";
+		disp(std::begin(sl), std::end(sl));
 	}
 	#endif
 	#if 0
@@ -467,15 +466,13 @@ int main()
 		SkipList<A, mycomp> sl;
 		sl.insert(A{1,2});
 		sl.insert(A{1,5});
-		sl.insert_unique(A{1,5});
+		sl.insert_unique({1,4});
 		sl.insert(A{3,10});
 		sl.insert(A{2,5});	
-		sl.display();
+		// sl.display();
+		disp(std::begin(sl), std::end(sl));
 		SkipList<A, mycomp>::Iterator it = sl.begin();
-		cout << "\n" << (*it).a << "\n";
-		++++it;
-		cout << "\n" << (*it).a << "\n";
-		disp(begin(sl), end(sl));
+		std::cout << "\n" << *it << "\n";
 	}
 	#endif
 }

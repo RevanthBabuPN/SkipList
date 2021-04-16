@@ -274,6 +274,12 @@ class SkipList
 			p_it_ = rhs.p_it_;
 		}
 
+		Iterator& operator=(const Iterator& rhs)
+		{
+			p_it_ = rhs.p_it_;
+			return *this;
+		}
+
 		Iterator& operator++() // pre
 		{
 			p_it_ = p_it_ -> next_[0];
@@ -399,9 +405,10 @@ void disp(T first, T last)
 {
 	while(first != last)
 	{
-		std::cout << *first << "\n";
+		std::cout << *first << "\t";
 		++first;
 	}
+	std::cout << "\n";
 }
 
 template<typename T>
@@ -451,11 +458,17 @@ int main()
 		sl.insert(60);
 		sl.display();
 
-		SkipList<float>::iterator it = sl.find(10.2);
-		if (it != sl.end())
-			std::cout << "found:\t" << *it << "\n";
+		SkipList<float>::iterator it1 = sl.find(10.2);
+		if (it1 != sl.end())
+			std::cout << "found:\t" << *it1 << "\n";
 		else
 			std::cout << "not found\n";
+		
+		SkipList<float>::iterator it2(it1);
+		it1++;
+		it1 = it2;
+		std::cout << "\nit2 ->" << *it2 <<"\n";
+		std::cout << "\nit1 ->" << *it1 <<"\n\n";
 		// SkipList<float>::Iterator it = sl.begin();
 		// std::cout << "\n" << *it << "\n\n";
 		disp(std::begin(sl), std::end(sl));

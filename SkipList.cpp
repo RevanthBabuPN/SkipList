@@ -234,7 +234,8 @@ class SkipList
 				cur = cur->next_[i];
 			}
 		}
-		--size_;
+		if(res)
+			--size_;
 		return res;
 	}
 

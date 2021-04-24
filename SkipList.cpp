@@ -61,8 +61,8 @@ class SkipList
 	static int MAX_LEVEL;
 	SLNode *head_;
 	SLNode *tail_;
-	int size_;
-	int currentMaxLevel_;
+	size_t size_;
+	size_t currentMaxLevel_;
 	//int flipAndIncrementLevel();
 
 	static bool randomBool()
@@ -70,13 +70,13 @@ class SkipList
 		return 0 + (rand() % 2) == 1;
 	}
 
-	static int flipAndIncrementLevel(int currentMaxLevel_, int MAX_LEVEL)
+	static size_t flipAndIncrementLevel(int currentMaxLevel_, int MAX_LEVEL)
 	{
 		bool head = true;
-		int level = 0;
+		size_t level = 0;
 
 		// for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
-		for(int i = 0; i < MAX_LEVEL; ++i)
+		for(size_t i = 0; i < MAX_LEVEL; ++i)
 		{
 			head = head && randomBool();//head && seed.next;
 			if(head)
@@ -101,7 +101,7 @@ class SkipList
 	//:head_(new SLNode(-1,SkipList<Key, Compare>::MAX_LEVEL)), size_(0), currentMaxLevel_(1)
 	:head_(new SLNode(MAX_LEVEL)), tail_(new SLNode(MAX_LEVEL)), size_(0), currentMaxLevel_(1)
 	{
-		for(int i = 0; i < MAX_LEVEL + 1; ++i)
+		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
 		{
 			head_->next_[i] = tail_;
 			tail_->prev_[i] = head_;
@@ -117,7 +117,7 @@ class SkipList
 		//int level = flipAndIncrementLevel();
 
 
-		int level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 		
@@ -125,7 +125,7 @@ class SkipList
 		SLNode *newNode = new SLNode(value, level);
 		SLNode *cur = head_;
 
-		for(int i = currentMaxLevel_-1; i>=0; --i)
+		for(long i = currentMaxLevel_-1; i>=0; --i)
 		{
 			while(cur->next_[i]->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value)) //while(cur->next_[i] != nullptr)
 			{
@@ -152,7 +152,7 @@ class SkipList
 		//int level = flipAndIncrementLevel();
 
 
-		int level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 
@@ -161,7 +161,7 @@ class SkipList
 		SLNode *cur = head_;
 		SLNode *old[level]; 
 
-		for(int i = currentMaxLevel_ - 1; i >= 0; --i)
+		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
 			/*
 			while(cur->next_[i] != nullptr)
@@ -216,7 +216,7 @@ class SkipList
 	{
 		SLNode *cur = head_;
 		bool res = false;
-		for(int i = currentMaxLevel_-1; i >= 0; --i)
+		for(long i = currentMaxLevel_-1; i >= 0; --i)
 		{
 			while(cur->next_[i] != nullptr)
 			{
@@ -240,7 +240,7 @@ class SkipList
 
 	void display()
 	{
-		for(int i = currentMaxLevel_ - 1; i >= 0; --i)
+		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
 			SLNode *cur = head_;
 			// int i = 0;
@@ -337,7 +337,7 @@ class SkipList
 	Iterator find(Key value)
 	{
 		SLNode *cur = head_;
-		for(int i = currentMaxLevel_-1; i >= 0; --i)
+		for(long i = currentMaxLevel_-1; i >= 0; --i)
 		{
 			while(cur->next_[i] != nullptr)
 			{

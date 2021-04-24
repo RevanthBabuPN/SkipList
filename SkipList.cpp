@@ -58,7 +58,7 @@ class SkipList
 	};
 
 	
-	static int MAX_LEVEL;
+	static size_t MAX_LEVEL;
 	SLNode *head_;
 	SLNode *tail_;
 	size_t size_;
@@ -366,7 +366,7 @@ class SkipList
 	}
 };
 template<class Key, class Compare>
-int SkipList<Key, Compare>::MAX_LEVEL = 10;
+size_t SkipList<Key, Compare>::MAX_LEVEL = 10;
 /*
 bool randomBool()
 {

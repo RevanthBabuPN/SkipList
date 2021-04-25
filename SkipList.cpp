@@ -54,11 +54,11 @@ class SkipList
 		int level_;
 		SLNode** next_;
 		SLNode** prev_;
-		//friend class SkipList<Key>;
 	};
 
 	
-	static size_t MAX_LEVEL;
+	// static size_t MAX_LEVEL;
+	size_t MAX_LEVEL;
 	SLNode *head_;
 	SLNode *tail_;
 	size_t size_;
@@ -97,9 +97,9 @@ class SkipList
 	}
 
 	public:
-	SkipList()
+	SkipList(size_t max = 10)
 	//:head_(new SLNode(-1,SkipList<Key, Compare>::MAX_LEVEL)), size_(0), currentMaxLevel_(1)
-	:head_(new SLNode(MAX_LEVEL)), tail_(new SLNode(MAX_LEVEL)), size_(0), currentMaxLevel_(1)
+	:MAX_LEVEL(max), head_(new SLNode(max)), tail_(new SLNode(max)), size_(0), currentMaxLevel_(1)
 	{
 		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
 		{
@@ -365,8 +365,8 @@ class SkipList
 		return std::bidirectional_iterator_tag();
 	}
 };
-template<class Key, class Compare>
-size_t SkipList<Key, Compare>::MAX_LEVEL = 10;
+// template<class Key, class Compare>
+// size_t SkipList<Key, Compare>::MAX_LEVEL = 10;
 /*
 bool randomBool()
 {
@@ -475,6 +475,7 @@ int main()
 		disp(std::begin(sl), std::end(sl));
 	}
 	#endif
+	std::cout << "\n\n";
 	#if 0
 	{
 		SkipList<A, mycomp> sl;

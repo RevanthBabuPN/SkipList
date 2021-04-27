@@ -1,8 +1,5 @@
 #include<iostream>
-// using namespace std;
 #include<random>
-// #include<set>
-
 
 template<class Key, class Compare = std::less<Key> >
 class SkipList
@@ -56,14 +53,11 @@ class SkipList
 		SLNode** prev_;
 	};
 
-	
-	// static size_t MAX_LEVEL;
 	size_t MAX_LEVEL;
 	SLNode *head_;
 	SLNode *tail_;
 	size_t size_;
 	size_t currentMaxLevel_;
-	//int flipAndIncrementLevel();
 
 	static bool randomBool()
 	{
@@ -75,7 +69,6 @@ class SkipList
 		bool head = true;
 		size_t level = 0;
 
-		// for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
 		for(size_t i = 0; i < MAX_LEVEL; ++i)
 		{
 			head = head && randomBool();//head && seed.next;
@@ -98,7 +91,6 @@ class SkipList
 
 	public:
 	SkipList(size_t max = 10)
-	//:head_(new SLNode(-1,SkipList<Key, Compare>::MAX_LEVEL)), size_(0), currentMaxLevel_(1)
 	:MAX_LEVEL(max), head_(new SLNode(max)), tail_(new SLNode(max)), size_(0), currentMaxLevel_(1)
 	{
 		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
@@ -114,14 +106,10 @@ class SkipList
 
 	void insert(Key value)
 	{
-		//int level = flipAndIncrementLevel();
-
-
 		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 		
-
 		SLNode *newNode = new SLNode(value, level);
 		SLNode *cur = head_;
 
@@ -129,10 +117,6 @@ class SkipList
 		{
 			while(cur->next_[i]->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value)) //while(cur->next_[i] != nullptr)
 			{
-				// if(!Compare()(cur->next_[i]->value_, value)) //if(cur->next_[i]->value_ > value)
-				// {
-				// 	break;
-				// }
 				cur = cur->next_[i];
 			}
 
@@ -149,13 +133,9 @@ class SkipList
 
 	void insert_unique(Key value)	
 	{
-		//int level = flipAndIncrementLevel();
-
-
 		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
-
 
 		SLNode *newNode = new SLNode(value, level);
 		SLNode *cur = head_;
@@ -163,20 +143,6 @@ class SkipList
 
 		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
-			/*
-			while(cur->next_[i] != nullptr)
-			{
-				if(!Compare()(cur->next_[i]->value_, value))//if(cur->next_[i]->value_ > value)
-				{
-					if(!Compare()(value, cur->next_[i]->value_))
-					{
-						return;
-					}
-					break;
-				}
-				cur = cur->next_[i];
-			}
-			*/
 			while(cur->next_[i]->next_[i] != nullptr && Compare()(cur->next_[i]->value_, value))
 			{
 				cur = cur->next_[i];
@@ -184,7 +150,6 @@ class SkipList
 
 			if(cur->next_[i]->next_[i] != nullptr && (!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))) // not unique
 			{
-				// std::cout << "equal: " << cur->next_[i]->value_ << ":" << value << "\n";
 				for(int j = level; j > i; --j)
 				{
 					old[j]->next_[j] = newNode->next_[j]; 
@@ -205,7 +170,6 @@ class SkipList
 				cur->next_[i]->prev_[i] = newNode;
 				newNode->prev_[i] = cur;
 				cur->next_[i] = newNode;
-				// std::cout << "level i: "<< i << "\n";
 				old[i] = cur;
 			}
 		}
@@ -228,7 +192,6 @@ class SkipList
 				{
 					cur->next_[i] = cur->next_[i]->next_[i];
 					res = true;
-					// --size_;
 					break;
 				}
 				cur = cur->next_[i];
@@ -244,7 +207,6 @@ class SkipList
 		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
 			SLNode *cur = head_;
-			// int i = 0;
 			while(cur->next_[i]->next_[i] != nullptr)
 			{
 				std::cout << cur->next_[i]->value_ << '\t';
@@ -342,13 +304,11 @@ class SkipList
 		{
 			while(cur->next_[i] != nullptr)
 			{
-				//if(!(cur->next_[i]->value_ < value) && !(value < cur->next_[i]->value_))//if(cur->next_[i]->value_ == value)// 
 				if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
 				{
-					//return true;//
 					return Iterator(cur->next_[i]);
 				}
-				//if(cur->next_[i]->value_ > value)
+
 				if(!Compare()(cur->next_[i]->value_, value))
 				{
 					break;
@@ -365,42 +325,8 @@ class SkipList
 		return std::bidirectional_iterator_tag();
 	}
 };
-// template<class Key, class Compare>
-// size_t SkipList<Key, Compare>::MAX_LEVEL = 10;
-/*
-bool randomBool()
-{
-	return 0 + (rand() % 2) == 1;
-}
 
-//template<class Key, class Compare>
-int SkipList<Key, Compare>::flipAndIncrementLevel()
-{
-	bool head = true;
-	int level = 0;
 
-	// for(int i = 0; i < SkipList<Key, Compare>::MAX_LEVEL; ++i)
-	for(int i = 0; i < MAX_LEVEL; ++i)
-	{
-		head = head && randomBool();//head && seed.next;
-		if(head)
-		{
-			level++;
-			if(level == currentMaxLevel_)
-			{
-				++currentMaxLevel_;
-				break;
-			}
-		} 
-		else
-		{
-			break;
-		}
-	}
-	return level;
-}
-
-*/
 template<typename T>
 void disp(T first, T last)
 {

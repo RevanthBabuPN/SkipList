@@ -104,6 +104,18 @@ class SkipList
 		delete head_;
 	}
 
+	size_t size() const
+	{
+		return size_;
+	}
+
+	bool empty() const
+	{
+		return size_ == 0;
+	}
+
+	//void clear()
+
 	void insert(Key value)
 	{
 		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
@@ -202,7 +214,7 @@ class SkipList
 		return res;
 	}
 
-	void display()
+	void display() const
 	{
 		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
@@ -286,6 +298,7 @@ class SkipList
 	};
 
 	using iterator = Iterator;
+	using const_iterator = Iterator;
 
 	Iterator begin()
 	{

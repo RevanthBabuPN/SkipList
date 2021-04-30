@@ -194,7 +194,7 @@ class SkipList
 		bool res = false;
 		for(long i = currentMaxLevel_-1; i >= 0; --i)
 		{
-			while(cur->next_[i] != nullptr)
+			while(cur->next_[i]->next_[i] != nullptr)
 			{
 				if(cur->next_[i]->value_ > value)
 				{
@@ -315,7 +315,7 @@ class SkipList
 		SLNode *cur = head_;
 		for(long i = currentMaxLevel_-1; i >= 0; --i)
 		{
-			while(cur->next_[i] != nullptr)
+			while(cur->next_[i]->next_[i] != nullptr)
 			{
 				if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
 				{

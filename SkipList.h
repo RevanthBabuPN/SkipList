@@ -188,29 +188,154 @@ class SkipList
 		++size_;
 	}
 
-	bool remove(Key value)	
+	bool remove1(Key value)	
 	{
 		SLNode *cur = head_;
 		bool res = false;
-		for(long i = currentMaxLevel_-1; i >= 0; --i)
+
+		int count = 0;
+		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
 		{
-			while(cur->next_[i]->next_[i] != nullptr)
+			count = 0;
+			while(cur->next_[i]!= nullptr && cur->next_[i]->next_[i] != nullptr)
 			{
-				if(cur->next_[i]->value_ > value)
+				if(!Compare()(cur->next_[i]->value_, value))
 				{
-					break;
-				}
-				if(cur->next_[i]->value_ == value)
-				{
-					cur->next_[i] = cur->next_[i]->next_[i];
-					res = true;
-					break;
+					if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
+					{
+						cur->next_[i] = cur->next_[i]->next_[i];
+						if(cur->next_[i]->next_[i] != nullptr)
+							cur->next_[i]->next_[i]->prev_[i] = cur;
+						res = true;
+						count += 1;
+						break;
+					}
+					else
+					{
+						break;
+					}
 				}
 				cur = cur->next_[i];
 			}
 		}
 		if(res)
 			--size_;
+		std::cout << count << "\n"; 
+		return res;
+	}
+
+	bool remove(Key value)	
+	{
+		SLNode *cur = head_;
+		bool res = false;
+		cur = cur->next_[currentMaxLevel_ - 1];
+
+		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
+		{
+			// while(cur->next_[i] != nullptr && cur->next_[i]->next_[i] != nullptr)
+			while(cur->next_[i]->next_[i] != nullptr)
+			{
+				if(!Compare()(cur->value_, value))
+				{
+					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
+					{
+						std::cout << "HERE\n";
+						for(int k = i; k >= 0; --k)
+						{
+							cur->next_[k]->prev_[k] = cur->prev_[k];
+							cur->prev_[k]->next_[k] = cur->next_[k];
+						}
+						--size_;
+						return true;
+					}
+					else
+					{
+						break;
+					}
+				}
+				cur = cur->next_[i];
+			}
+			if(!Compare()(cur->value_, value))
+			{
+				if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
+				{
+					for(int k = i; k >= 0; --k)
+					{
+						cur->next_[k]->prev_[k] = cur->prev_[k];
+						cur->prev_[k]->next_[k] = cur->next_[k];
+					}
+					--size_;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bool remove_all(Key value)	
+	{
+		SLNode *cur = head_;
+		bool res = false;
+
+		int count = 0;
+		long i = currentMaxLevel_ - 1;
+		cur = cur->next_[i];
+		while(i >= 0)
+		{
+			while(cur->next_[i]!= nullptr && cur->next_[i]->next_[i] != nullptr)
+			{
+				if(!Compare()(cur->value_, value))
+				{
+					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
+					{
+						std::cout << "here " << (cur->value_).rp << "\n";
+						for(int k = i; k >= 0; --k)
+						{
+							std::cout << "Hello " << k << "\n";
+							if(cur->next_[k] != nullptr)
+								cur->next_[k]->prev_[k] = cur->prev_[k];
+							cur->prev_[k]->next_[k] = cur->next_[k];
+						}	
+						res = true;
+						count += 1;
+						std::cout << "there " << (cur->next_[i]->value_).rp << "\n";
+					}
+					else
+					{	
+						std::cout << "its greater go to next level\n";
+						cur = cur->prev_[i];
+						--i;
+						continue;
+					}
+				}
+				cur = cur->next_[i];
+				std::cout << "thereee " << (cur->value_).rp << "\n";
+			}
+			if(!Compare()(cur->value_, value))
+			{
+				if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
+				{
+					std::cout << "here " << (cur->value_).rp << "\n";
+					for(int k = i; k >= 0; --k)
+					{
+						std::cout << "Hello " << k << "\n";
+						if(cur->next_[k] != nullptr)
+							cur->next_[k]->prev_[k] = cur->prev_[k];
+						cur->prev_[k]->next_[k] = cur->next_[k];
+					}	
+					res = true;
+					count += 1;
+					std::cout << "there " << (cur->next_[i]->value_).rp << "\n";
+				}
+			}
+			cur = cur->prev_[i];
+			--i;
+			if(i != 0)
+				cur = cur->next_[i];
+		}
+		if(res)
+			--size_;
+		std::cout << count << "\n"; 
 		return res;
 	}
 
@@ -227,6 +352,21 @@ class SkipList
 			std::cout << '\n';
 		}
 	}
+
+	void display_reverse() const
+	{
+		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
+		{
+			SLNode *cur = tail_;
+			while(cur->prev_[i]->prev_[i] != nullptr)
+			{
+				std::cout << cur->prev_[i]->value_ << '\t';
+				cur = cur->prev_[i];
+			}
+			std::cout << '\n';
+		}
+	}
+
 	class Iterator
 	{
 		private:

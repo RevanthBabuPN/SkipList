@@ -58,7 +58,7 @@ int main()
 		sl.insert(60);
 		sl.display();
 
-		SkipList<float>::iterator it1 = sl.find(10.2);
+		SkipList<float>::iterator it1 = sl.find(60);
 		if (it1 != sl.end())
 			std::cout << "found:\t" << *it1 << "\n";
 		else
@@ -72,6 +72,10 @@ int main()
 		// SkipList<float>::Iterator it = sl.begin();
 		// std::cout << "\n" << *it << "\n\n";
 		disp(std::begin(sl), std::end(sl));
+
+		std::cout << sl.size() << "\n\n";
+		sl.remove(60);
+		std::cout << sl.size() << "\n\n";
 	}
 	#endif
 	std::cout << "\n\n";

@@ -204,8 +204,8 @@ class SkipList
 					if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
 					{
 						cur->next_[i] = cur->next_[i]->next_[i];
-						if(cur->next_[i]->next_[i] != nullptr)
-							cur->next_[i]->next_[i]->prev_[i] = cur;
+						// if(cur->next_[i]->next_[i] != nullptr)
+							cur->next_[i]->prev_[i] = cur;
 						res = true;
 						count += 1;
 						break;
@@ -268,6 +268,7 @@ class SkipList
 					return true;
 				}
 			}
+			cur = cur->prev_[i];
 		}
 		return false;
 	}

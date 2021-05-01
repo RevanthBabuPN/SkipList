@@ -105,6 +105,27 @@ class SkipList
 		}
 	}
 
+	template<class InputIterator>
+	SkipList(InputIterator first, InputIterator last)
+	{
+		this->MAX_LEVEL = 10;
+		this->currentMaxLevel_ = 1;
+		this->size_ = 0;
+		this->head_ = new SLNode(MAX_LEVEL);
+		this->tail_ = new SLNode(MAX_LEVEL);
+		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
+		{
+			head_->next_[i] = tail_;
+			tail_->prev_[i] = head_;
+		}
+
+		while(first != last)
+		{
+			this->insert(*first);
+			++first;
+		}
+	}
+
 	SkipList(SkipList<Key>& rhs)
 	{
 		this->MAX_LEVEL = rhs.MAX_LEVEL;

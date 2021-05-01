@@ -104,6 +104,62 @@ class SkipList
 			tail_->prev_[i] = head_;
 		}
 	}
+
+	SkipList(SkipList<Key>& rhs)
+	{
+		this->MAX_LEVEL = rhs.MAX_LEVEL;
+		this->currentMaxLevel_ = 1;
+		this->size_ = 0;
+		this->head_ = new SLNode(MAX_LEVEL);
+		this->tail_ = new SLNode(MAX_LEVEL);
+		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
+		{
+			head_->next_[i] = tail_;
+			tail_->prev_[i] = head_;
+		}
+
+		SLNode *cur = rhs.head_;
+		while(cur->next_[0]->next_[0] != nullptr)
+		{
+			this->insert(cur->next_[0]->value_);
+			cur = cur->next_[0];
+		}
+	}
+
+	SkipList<Key>& operator=(const SkipList<Key>& rhs)
+	{
+		if(this != &rhs)
+		{	
+			SLNode *pre = nullptr;
+			SLNode *cur = this->head_;
+			while (cur != nullptr)
+			{
+				pre = cur;
+				cur = cur->next_[0];
+				delete pre;
+			}
+			
+			this->MAX_LEVEL = rhs.MAX_LEVEL;
+			this->currentMaxLevel_ = 1;
+			this->size_ = 0;
+			this->head_ = new SLNode(MAX_LEVEL);
+			this->tail_ = new SLNode(MAX_LEVEL);
+			for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
+			{
+				head_->next_[i] = tail_;
+				tail_->prev_[i] = head_;
+			}
+
+			cur = rhs.head_;
+			while(cur->next_[0]->next_[0] != nullptr)
+			{
+				this->insert(cur->next_[0]->value_);
+				cur = cur->next_[0];
+			}
+		}
+		return *this;
+	}
+
 	~SkipList()
 	{
 		// delete head_;

@@ -1,3 +1,6 @@
+#ifndef SKIPLIST_H
+#define SKIPLIST_H
+
 #include<iostream>
 #include<random>
 
@@ -505,3 +508,5 @@ class SkipList
 		return std::bidirectional_iterator_tag();
 	}
 };
+
+#endif

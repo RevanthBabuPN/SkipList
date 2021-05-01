@@ -16,6 +16,7 @@ class SkipList
 	using const_pointer = const value_type*;
 	using reference = value_type&;
 	using const_reference = const value_type&;
+	using difference_type = std::ptrdiff_t;
 
 	private:
 	struct SLNode
@@ -404,6 +405,10 @@ class SkipList
 		
 		public:
 		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef Key value_type;
+        typedef std::ptrdiff_t difference_type;
+        typedef Key* pointer;
+        typedef Key& reference;
 
 		Iterator()
 		{}

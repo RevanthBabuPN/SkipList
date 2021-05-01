@@ -40,6 +40,7 @@ class SkipList
 		~SLNode()
 		{
 			delete [] next_;
+			delete [] prev_;
 		}
 
 		friend bool operator<(SLNode& lhs, SLNode& rhs)
@@ -101,7 +102,15 @@ class SkipList
 	}
 	~SkipList()
 	{
-		delete head_;
+		// delete head_;
+		SLNode* pre = nullptr;
+		SLNode *cur = head_;
+		while(cur != nullptr)
+		{
+			pre = cur;
+			cur = cur->next_[0];
+			delete pre;
+		}
 	}
 
 	size_t size() const
@@ -114,11 +123,28 @@ class SkipList
 		return size_ == 0;
 	}
 
-	//void clear()
+	void clear()
+	{
+		SLNode* pre = head_;
+		SLNode *cur = head_->next_[0];
+		while(cur->next_[0] != nullptr)
+		{
+			pre = cur;
+			cur = cur->next_[0];
+			delete pre;
+		}
+		for(size_t i = 0; i < MAX_LEVEL + 1; ++i)
+		{
+			head_->next_[i] = tail_;
+			tail_->prev_[i] = head_;
+		}
+		currentMaxLevel_ = 1;
+		size_ = 0;
+	}
 
 	void insert(Key value)
 	{
-		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		size_t level = flipAndIncrementLevel(currentMaxLevel_, MAX_LEVEL);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 		
@@ -145,7 +171,7 @@ class SkipList
 
 	void insert_unique(Key value)	
 	{
-		size_t level = flipAndIncrementLevel(currentMaxLevel_, 10);
+		size_t level = flipAndIncrementLevel(currentMaxLevel_, MAX_LEVEL);
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 
@@ -167,11 +193,11 @@ class SkipList
 					old[j]->next_[j] = newNode->next_[j]; 
 					newNode->next_[j]->prev_[j] = old[j];
 				}
-				for (int j = level; j >= 0; --j)
-				{
-					newNode->next_[j] = nullptr;
-					newNode->prev_[j] = nullptr;
-				}
+				// for (int j = level; j >= 0; --j)
+				// {
+				// 	newNode->next_[j] = nullptr;
+				// 	newNode->prev_[j] = nullptr;
+				// }
 				delete newNode;
 				return;
 			}
@@ -239,7 +265,7 @@ class SkipList
 				{
 					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
 					{
-						std::cout << "HERE\n";
+						// std::cout << "HERE\n";
 						for(int k = i; k >= 0; --k)
 						{
 							cur->next_[k]->prev_[k] = cur->prev_[k];

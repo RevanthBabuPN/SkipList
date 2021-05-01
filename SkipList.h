@@ -126,7 +126,7 @@ class SkipList
 		}
 	}
 
-	SkipList(SkipList<Key>& rhs)
+	SkipList(SkipList<Key, Compare>& rhs)
 	{
 		this->MAX_LEVEL = rhs.MAX_LEVEL;
 		this->currentMaxLevel_ = 1;
@@ -147,7 +147,7 @@ class SkipList
 		}
 	}
 
-	SkipList<Key>& operator=(const SkipList<Key>& rhs)
+	SkipList<Key, Compare>& operator=(const SkipList<Key, Compare>& rhs)
 	{
 		if(this != &rhs)
 		{	
@@ -293,42 +293,6 @@ class SkipList
 			}
 		}
 		++size_;
-	}
-
-	bool remove1(Key value)	
-	{
-		SLNode *cur = head_;
-		bool res = false;
-
-		int count = 0;
-		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
-		{
-			count = 0;
-			while(cur->next_[i]!= nullptr && cur->next_[i]->next_[i] != nullptr)
-			{
-				if(!Compare()(cur->next_[i]->value_, value))
-				{
-					if(!Compare()(cur->next_[i]->value_, value) && !Compare()(value, cur->next_[i]->value_))
-					{
-						cur->next_[i] = cur->next_[i]->next_[i];
-						// if(cur->next_[i]->next_[i] != nullptr)
-							cur->next_[i]->prev_[i] = cur;
-						res = true;
-						count += 1;
-						break;
-					}
-					else
-					{
-						break;
-					}
-				}
-				cur = cur->next_[i];
-			}
-		}
-		if(res)
-			--size_;
-		std::cout << count << "\n"; 
-		return res;
 	}
 
 	bool remove(Key value)	

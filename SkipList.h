@@ -253,6 +253,7 @@ class SkipList
 	void insert_unique(Key value)	
 	{
 		size_t level = flipAndIncrementLevel(currentMaxLevel_, MAX_LEVEL);
+		size_t oldMaxLevel_ = currentMaxLevel_;
 		if (level >= currentMaxLevel_)
 			currentMaxLevel_ = level + 1;
 
@@ -279,6 +280,7 @@ class SkipList
 				// 	newNode->next_[j] = nullptr;
 				// 	newNode->prev_[j] = nullptr;
 				// }
+				currentMaxLevel_ = oldMaxLevel_;
 				delete newNode;
 				return;
 			}

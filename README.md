@@ -16,6 +16,7 @@ Sorted associative containers like set and map which are implemented using heigh
 
 <br>
 
+## Implementation
 ```cpp
 template<
 	class Key,
@@ -103,6 +104,10 @@ template<
 		<td>(destructor)</td>
 		<td>destructs the SkipList</td>
 	</tr>
+	<tr>
+		<td>operator=</td>
+		<td>copy container content</td>
+	</tr>
 </table>
 
 #### Capacity
@@ -125,7 +130,7 @@ template<
 	</tr>
 	<tr>
 		<td>end</td>
-		<td>returns an iterator to the end</td>
+		<td>returns an iterator to one past the end</td>
 	</tr>
 </table>
 
@@ -155,8 +160,8 @@ template<
 		<td>find</td>
 		<td>Get iterator to element</td>
 	</tr>
-	<tr>
+	<!-- <tr>
 		<td>contains</td>
 		<td>checks if the container contains element with specific key</td>
-	</tr>
+	</tr> -->
 </table>

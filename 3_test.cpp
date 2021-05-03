@@ -68,11 +68,14 @@ int main()
 		// replace(intsl.begin(), intsl.end(), 10, 50);
 		// reverse(intsl.begin(), intsl.end());
 	}
+	
 	cout << "\n===============================================================\n\n";
+	
 	#if 1
 	{
 		cout << "SkipList of floats\n---------------------------------------------------------------\n";
-		float arr[] = {1.5, 2.1, 5.5, 5.4, 2.2, 7.5};
+		// float arr[] = {1.5, 2.1, 5.5, 5.4, 2.2, 7.5};
+		vector<float> arr = {1.5, 2.1, 5.5, 5.4, 2.2, 7.5};
 		SkipList<float> floatsl(begin(arr), end(arr));
 
 		cout << "Elements:\t";

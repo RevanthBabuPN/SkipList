@@ -35,15 +35,16 @@ int main()
 {
 	cout << "SkipList of Complex type\n------------------------------------------------------------------------------\n";
 	SkipList<Complex> sl;
-	sl.insert({1,2});
-	sl.insert({2,4});
 	sl.insert({1,1});
+	sl.insert({2,4});
+	sl.insert({3,2});
 	sl.insert({10,3});
 	sl.insert({11,4});
 	sl.insert({5,6});
 	sl.insert_unique({5,7});
 	sl.insert_unique({6,7});
 	sl.insert({5,8});
+	sl.remove({2,4});
 
 	SkipList<Complex> sl_1(sl);
 	Complex c1 = {10,3};

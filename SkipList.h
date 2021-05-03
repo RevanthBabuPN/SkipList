@@ -46,11 +46,6 @@ class SkipList
 			delete [] prev_;
 		}
 
-		friend bool operator<(SLNode& lhs, SLNode& rhs)
-		{
-			return lhs.value_ < rhs.value_;
-		}
-
 		key_type value_;
 		int level_;
 		SLNode** next_;

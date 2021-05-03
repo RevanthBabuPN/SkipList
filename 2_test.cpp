@@ -20,14 +20,6 @@ struct Complex
 	}
 };
 
-struct ComplexCompare
-{
-	int operator()(Complex &a, Complex &b)
-	{
-		return a.rp < b.rp;
-	}
-};
-
 template<typename T>
 void disp(T first, T last)
 {
@@ -42,34 +34,24 @@ void disp(T first, T last)
 int main()
 {
 	cout << "SkipList of Complex type\n------------------------------------------------------------------------------\n";
-	SkipList<Complex, ComplexCompare> sl;
+	SkipList<Complex> sl;
 	sl.insert({1,2});
 	sl.insert({2,4});
 	sl.insert({1,1});
 	sl.insert({10,3});
 	sl.insert({11,4});
 	sl.insert({5,6});
-	// sl.insert({12,7});
 	sl.insert_unique({5,7});
 	sl.insert_unique({6,7});
 	sl.insert({5,8});
-	// sl.display();
-	// std::cout << "\n--------\n";
-	// SkipList<Complex, ComplexCompare>::iterator it = sl.find({5,6});
-	// cout << "found: " << (*it).rp << ":" << (*it).ip << "\n";
-	// disp(sl.begin(), sl.end());
-	// sl.display();
-	// std::cout << "\n\n";
-	// sl.display_reverse();
 
-	SkipList<Complex, ComplexCompare> sl_1(sl);
+	SkipList<Complex> sl_1(sl);
 	Complex c1 = {10,3};
 	cout << "Elements:\t";
 	disp(sl_1.begin(), sl_1.end());
 	cout << "Number of elements:\t" << sl.size() << "\n";
 
-	// SkipList<Complex, ComplexCompare>::iterator it = find(sl.begin(), sl.end(), c1);
-	SkipList<Complex, ComplexCompare>::iterator it = sl.find(c1);
+	SkipList<Complex>::iterator it = sl.find(c1);
 	if (it != sl.end())
 	{
 		cout << *it << " \tFound" << "\n";
@@ -79,7 +61,7 @@ int main()
 		cout << c1 <<" \tNot found\n";
 	}
 
-	cout << "Using functions of <algorithm>\n---------------------------------\n";
+	cout << "\nUsing functions of <algorithm>\n---------------------------------\n";
 	it = max_element(sl.begin(), sl.end());
 	cout << "Max element:\t" << *it << "\n";
 

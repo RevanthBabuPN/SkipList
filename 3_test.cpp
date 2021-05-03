@@ -30,13 +30,11 @@ int main()
 		intsl.remove(1);
 		intsl.insert(1);
 
-		// SkipList<int> intsl1(intsl);
-
 		cout << "Elements:\t";
 		disp(intsl.begin(), intsl.end());
 		cout << "Number of elements:\t" << intsl.size() << "\n";
 
-		cout << "\nusing functions of <algorithm>\n------------------------------\n";
+		cout << "\nUsing functions of <algorithm>\n------------------------------\n";
 		int x = 60;
 		SkipList<int>::iterator it = find(intsl.begin(), intsl.end(), x);
 		if (it != intsl.end())
@@ -76,14 +74,6 @@ int main()
 		cout << "SkipList of floats\n---------------------------------------------------------------\n";
 		float arr[] = {1.5, 2.1, 5.5, 5.4, 2.2, 7.5};
 		SkipList<float> floatsl(begin(arr), end(arr));
-		// floatsl.insert(1.5);
-		// floatsl.insert(2.1);
-		// floatsl.insert(5.5);
-		// floatsl.insert_unique(5.4);
-		// floatsl.insert_unique(2.2);
-		// floatsl.insert_unique(2.1);
-		// floatsl.remove(2.4);
-		// floatsl.insert(7.5);
 
 		cout << "Elements:\t";
 		disp(floatsl.begin(), floatsl.end());
@@ -99,7 +89,7 @@ int main()
 		{
 			cout << x <<":\tNot found\n";
 		}
-		cout << "\nusing functions of <algorithm>\n-------------------------------\n";
+		cout << "\nUsing functions of <algorithm>\n-------------------------------\n";
 		
 		it = max_element(floatsl.begin(), floatsl.end());
 		cout << "Max element:\t" << *it << "\n";

@@ -74,23 +74,15 @@ int main()
 		};
 		SkipList<Date, byyear> datesl(begin(arr), end(arr));
 		SkipList<Date, byyear> sl(datesl);
-		// cout << "size: " << datesl1.size() << "\n";
-		// datesl1.insert(10);
-		// datesl1.insert(1);
-		// datesl1.insert(1);
-		// datesl1.insert(5);
-		// datesl1.insert_unique(6);
-		// datesl1.insert_unique(0);
-		// datesl1.remove(1);
 
 		cout << "Elements:\t";
 		disp(datesl.begin(), datesl.end());
 		cout << "Number of elements:\t" << datesl.size() << "\n";
 		
-		cout << "\nusing functions of <algorithm>\n------------------------------\n";
+		cout << "\nUsing functions of <algorithm>\n------------------------------\n";
 		Date d1 = {18,5,2000};
 		SkipList<Date, byyear>::iterator it = find(datesl.begin(), datesl.end(), d1);
-		// SkipList<Date, byyear>::iterator it = sl.find(d1);
+
 		if (it != datesl.end())
 		{
 			cout << *it << ":\tFound"  << "\n";

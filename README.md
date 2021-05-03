@@ -17,10 +17,12 @@ Sorted associative containers like set and map which are implemented using heigh
 <br>
 
 ## Implementation
+[SkipList.h](SkipList.h) contains the implementation of the generic SkipList data structure. The container provides a bidirectional iterator which can be used with the functions of the STL `<algorithm>` library.
+
 ```cpp
 template<
-	class Key,
-    class Compare = std::less<Key>
+	class Key,			// SkipList::key_type/value_type
+	class Compare = std::less<Key>	// SkipList::key_compare/value_compare
 >class SkipList;
 ```
 
@@ -44,12 +46,12 @@ template<
 	<tr>
 		<td>key_compare</td>
 		<td>Compare</td>
-		<td>defaults to: less< key_type ></td>
+		<td>defaults to: less&ltkey_type&gt </td>
 	</tr>
 	<tr>
 		<td>value_compare</td>
 		<td>Compare</td>
-		<td>defaults to: less< value_type > </td>
+		<td>defaults to: less&ltvalue_type&gt </td>
 	</tr>
 	<tr>
 		<td>pointer</td>

@@ -310,12 +310,18 @@ class SkipList
 				{
 					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
 					{
+						SLNode *temp = cur;
 						for(int k = i; k >= 0; --k)
 						{
 							cur->next_[k]->prev_[k] = cur->prev_[k];
 							cur->prev_[k]->next_[k] = cur->next_[k];
 						}
 						--size_;
+						{
+							if (head_->next_[currentMaxLevel_ - 1]->next_[0] == nullptr)
+								--currentMaxLevel_;
+							delete temp;
+						}
 						return true;
 					}
 					else
@@ -329,12 +335,18 @@ class SkipList
 			{
 				if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
 				{
+					SLNode *temp = cur;
 					for(int k = i; k >= 0; --k)
 					{
 						cur->next_[k]->prev_[k] = cur->prev_[k];
 						cur->prev_[k]->next_[k] = cur->next_[k];
 					}
 					--size_;
+					{
+						if (head_->next_[currentMaxLevel_ - 1]->next_[0] == nullptr)
+							--currentMaxLevel_;
+						delete temp;
+					}
 					return true;
 				}
 			}
@@ -343,6 +355,7 @@ class SkipList
 		return false;
 	}
 
+	#if 0
 	void display() const
 	{
 		for(long i = currentMaxLevel_ - 1; i >= 0; --i)
@@ -370,6 +383,7 @@ class SkipList
 			std::cout << '\n';
 		}
 	}
+	#endif
 
 	class Iterator
 	{
@@ -477,7 +491,7 @@ class SkipList
 				cur = cur->next_[i];
 			}
 		}
-		return end();//false;
+		return end();
 	}
 
 	inline std::bidirectional_iterator_tag

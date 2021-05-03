@@ -66,14 +66,17 @@ int main()
 	{
 		cout << "SkipList of Dates\n------------------------------------------------------------------------------------------\n";
 		Date arr[] = { 
-			{11, 9, 2001},
 			{26, 1, 2001},
+			{11, 9, 2001},
 			{11, 1, 1966},
 			{30, 1, 1948},
 			{26, 12, 2004},
 		};
+
 		SkipList<Date, byyear> datesl(begin(arr), end(arr));
-		SkipList<Date, byyear> sl(datesl);
+		
+		// SkipList<Date, byyear> sl;
+		// sl = datesl;
 
 		cout << "Elements:\t";
 		disp(datesl.begin(), datesl.end());
@@ -102,7 +105,7 @@ int main()
 		cout << "Count of "<< d1 << "\t" << c << "\n";
 
 		cout << "Using for_each to print dates before 2002 \n";
-		for_each(datesl.begin(), datesl.end(), [](Date x){if(x.yy < 2002) cout<<x<<"\t";});
+		for_each(datesl.begin(), datesl.end(), [](Date x){if(x.yy < 2002) cout << x << "\t";});
 		cout << "\n";
 
 		cout << boolalpha;

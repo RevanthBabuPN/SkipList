@@ -46,10 +46,10 @@ int main()
 	sl.insert({5,8});
 	sl.remove({2,4});
 
-	SkipList<Complex> sl_1(sl);
+	// SkipList<Complex> sl1(sl);
 	Complex c1 = {10,3};
 	cout << "Elements:\t";
-	disp(sl_1.begin(), sl_1.end());
+	disp(sl.begin(), sl.end());
 	cout << "Number of elements:\t" << sl.size() << "\n";
 
 	SkipList<Complex>::iterator it = sl.find(c1);

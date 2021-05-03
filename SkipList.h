@@ -1,7 +1,6 @@
 #ifndef SKIPLIST_H
 #define SKIPLIST_H
 
-#include<iostream>
 #include<random>
 
 template<class Key, class Compare = std::less<Key> >
@@ -76,13 +75,13 @@ class SkipList
 
 		for(size_t i = 0; i < MAX_LEVEL; ++i)
 		{
-			head = head && randomBool();//head && seed.next;
+			head = head && randomBool();
 			if(head)
 			{
 				level++;
 				if(level == currentMaxLevel_)
 				{
-					++currentMaxLevel_;
+					// ++currentMaxLevel_;
 					break;
 				}
 			} 
@@ -183,7 +182,6 @@ class SkipList
 
 	~SkipList()
 	{
-		// delete head_;
 		SLNode* pre = nullptr;
 		SLNode *cur = head_;
 		while(cur != nullptr)
@@ -312,7 +310,6 @@ class SkipList
 				{
 					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
 					{
-						// std::cout << "HERE\n";
 						for(int k = i; k >= 0; --k)
 						{
 							cur->next_[k]->prev_[k] = cur->prev_[k];
@@ -344,73 +341,6 @@ class SkipList
 			cur = cur->prev_[i];
 		}
 		return false;
-	}
-
-	bool remove_all(Key value)	
-	{
-		SLNode *cur = head_;
-		bool res = false;
-
-		int count = 0;
-		long i = currentMaxLevel_ - 1;
-		cur = cur->next_[i];
-		while(i >= 0)
-		{
-			while(cur->next_[i]!= nullptr && cur->next_[i]->next_[i] != nullptr)
-			{
-				if(!Compare()(cur->value_, value))
-				{
-					if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
-					{
-						std::cout << "here " << (cur->value_).rp << "\n";
-						for(int k = i; k >= 0; --k)
-						{
-							std::cout << "Hello " << k << "\n";
-							if(cur->next_[k] != nullptr)
-								cur->next_[k]->prev_[k] = cur->prev_[k];
-							cur->prev_[k]->next_[k] = cur->next_[k];
-						}	
-						res = true;
-						count += 1;
-						std::cout << "there " << (cur->next_[i]->value_).rp << "\n";
-					}
-					else
-					{	
-						std::cout << "its greater go to next level\n";
-						cur = cur->prev_[i];
-						--i;
-						continue;
-					}
-				}
-				cur = cur->next_[i];
-				std::cout << "thereee " << (cur->value_).rp << "\n";
-			}
-			if(!Compare()(cur->value_, value))
-			{
-				if(!Compare()(cur->value_, value) && !Compare()(value, cur->value_))
-				{
-					std::cout << "here " << (cur->value_).rp << "\n";
-					for(int k = i; k >= 0; --k)
-					{
-						std::cout << "Hello " << k << "\n";
-						if(cur->next_[k] != nullptr)
-							cur->next_[k]->prev_[k] = cur->prev_[k];
-						cur->prev_[k]->next_[k] = cur->next_[k];
-					}	
-					res = true;
-					count += 1;
-					std::cout << "there " << (cur->next_[i]->value_).rp << "\n";
-				}
-			}
-			cur = cur->prev_[i];
-			--i;
-			if(i != 0)
-				cur = cur->next_[i];
-		}
-		if(res)
-			--size_;
-		std::cout << count << "\n"; 
-		return res;
 	}
 
 	void display() const

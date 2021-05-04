@@ -68,22 +68,15 @@ class SkipList
 		bool head = true;
 		size_t level = 0;
 
-		for(size_t i = 0; i < MAX_LEVEL; ++i)
+		size_t i = 0;
+		while (i < MAX_LEVEL && head && level != currentMaxLevel_)
 		{
 			head = head && randomBool();
-			if(head)
+			if (head)
 			{
-				level++;
-				if(level == currentMaxLevel_)
-				{
-					// ++currentMaxLevel_;
-					break;
-				}
-			} 
-			else
-			{
-				break;
+				++level;
 			}
+			++i;
 		}
 		return level;
 	}

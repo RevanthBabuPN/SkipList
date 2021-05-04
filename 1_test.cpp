@@ -28,7 +28,7 @@ int main()
 		intsl.insert_unique(6);
 		intsl.insert_unique(0);
 		intsl.remove(1);
-		intsl.insert(1);
+		intsl.insert(3);
 
 		cout << "Elements:\t";
 		disp(intsl.begin(), intsl.end());

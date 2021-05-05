@@ -6,7 +6,6 @@ Skiplist is a data structure used to store sorted list of items, very much like 
 <p>
 Sorted associative containers like set and map which are implemented using height balanced binary search tree can be implemented using SkipList to achieve better performance in certain cases.
 </p>
-
 <br/>
 
 ### Rationale
@@ -94,7 +93,6 @@ template<
 		<td></td>
 	</tr>
 </table>
-<br>
 
 ### Member functions
 <table>
@@ -162,8 +160,21 @@ template<
 		<td>find</td>
 		<td>Get iterator to element</td>
 	</tr>
-	<!-- <tr>
-		<td>contains</td>
-		<td>checks if the container contains element with specific key</td>
-	</tr> -->
 </table>
+
+<br>
+
+## Usage
+```cpp
+#include <iostream>
+#include "SkipList.h"
+
+int main()
+{
+	SkipList<int> sl;		// []
+	sl.insert(1);			// [1]
+	sl.insert(2);			// [1, 2]
+	sl.insert_unique(3);		// [1, 2, 3]
+	std::cout << "Size: " << sl.size();	// Size: 3
+}
+```
